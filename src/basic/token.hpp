@@ -8,6 +8,10 @@
 namespace basic {
     struct Token {
         enum Type {
+            // Like NumLiteral, but no funny business with negatives or non-int
+            // values.
+            LineNum,
+
             // erases all stored commands
             New,
             // executes commands in program
@@ -42,23 +46,32 @@ namespace basic {
             // The <> operator
             NotEqualTo,
             LessThanOrEqualTo,
-            GreaterThanOrEqualTo
+            GreaterThanOrEqualTo,
+
+            // Just used for indexing lists, as far as I can tell
+            OpenParen,
+            CloseParen,
+
+            // For variable names
+            Var,
         } type; // End enum Type
 
-        std::variant<std::monostate, std::string, double> value;
+        std::variant<std::monostate, std::string, double, size_t> value;
 
-        Token(std::string&& str_literal)
-            : type(StrLiteral)
-            , value(str_literal) {}
-        
-        Token(double num)
-            : type(NumLiteral)
-            , value(num) {}
+        static Token from_literal(double num);
+        static Token from_literal(std::string&& str);
+        static Token from_line_num(size_t num);
+        static Token from_var_or_keyword(std::string&& id);
         
         Token(Type sym)
             : type(sym)
             , value(std::monostate()) {
             assert(sym != NumLiteral && sym != StrLiteral);
-        } // End Token(Type sym)
+        }
+    private:
+        Token(Type type, std::variant<std::monostate, 
+            std::string, double, size_t>&& value)
+            : type(type)
+            , value(std::move(value)) {}
     }; // End struct Token
 }

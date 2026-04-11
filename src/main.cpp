@@ -11,6 +11,6 @@ bool MyApp::OnInit() {
     MyFrame* frame = new MyFrame();
     frame->Show();
     return true;
-}
+} // end MyApp::OnInit
 
 wxIMPLEMENT_APP(MyApp);

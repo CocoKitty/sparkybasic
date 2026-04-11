@@ -62,4 +62,4 @@ MyFrame::MyFrame(void) {
         "&Exit SparkyBasic\tCtrl-Q",
         "Exit SparkyBasic without saving."
     );
-}
+} // end MyFrame::MyFrame

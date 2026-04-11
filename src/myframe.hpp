@@ -16,4 +16,4 @@ class MyFrame : public wxFrame {
     DECLARE_EVENT_TABLE()
 public:
     MyFrame(void);
-};
+}; // end class MyFrame
