@@ -5,7 +5,7 @@
 #include <string>
 #include <cassert>
 
-namespace basic {
+namespace basic::lexer {
     struct Token {
         enum Type {
             // erases all stored commands

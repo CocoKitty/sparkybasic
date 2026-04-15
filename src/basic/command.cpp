@@ -9,14 +9,14 @@ using namespace basic;
 bool Command::is_direct_command(void) const {
     // aborts if statement is somehow in an invalid state
     assert(!tokens.empty());
-    return tokens[0].type == Token::NumLiteral;
+    return tokens[0].type == lexer::Token::NumLiteral;
 } // end Command::is_direct_command
 
 unsigned int Command::get_line_number(void) const {
     // aborts if statement is somehow in an invalid state
     assert(!tokens.empty());
     // calling get_line_number() on direct commands is illegal
-    assert(tokens[0].type == Token::NumLiteral);
+    assert(tokens[0].type == lexer::Token::NumLiteral);
 
     double line_num = std::get<double>(tokens[0].value);
 

@@ -1,7 +1,7 @@
 #pragma once
 // By Edith Pugh on 2026-04-10, Sparky's third birthday
 
-#include "token.hpp"
+#include "lexer/token.hpp"
 #include "evalenv.hpp"
 
 #include <string>
@@ -11,7 +11,7 @@
 namespace basic {
     // A class that 
     class Command {
-        std::vector<Token> tokens;
+        std::vector<lexer::Token> tokens;
     public:
         struct EvalResult {
             struct Ok { std::string out; };
@@ -27,7 +27,7 @@ namespace basic {
         // executes command on env, may mutate env
         EvalResult eval(EvalEnv& env) const;
         // basic constructor for command
-        Command(std::vector<Token>&& tokens)
+        Command(std::vector<lexer::Token>&& tokens)
             : tokens(std::move(tokens)) {}
     }; // End Class Command
 } // End namespace basic

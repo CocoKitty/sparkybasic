@@ -7,7 +7,7 @@
 #include<vector>
 #include<string>
 
-namespace basic {
+namespace basic::lexer {
     struct LexResult {
         struct Ok { std::vector<Token> tokens; };
         struct Err { std::string msg; };

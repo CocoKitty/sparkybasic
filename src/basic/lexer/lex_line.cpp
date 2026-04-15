@@ -11,8 +11,9 @@
 #include <sstream>
 #include <string>
 #include <optional>
+#include <variant>
 
-using namespace basic;
+using namespace basic::lexer;
 
 // helper function to eat line num
 std::optional<LexResult::Err> lex_line_num(const std::string& line,
@@ -32,11 +33,12 @@ LexResult lex_line(const std::string& line) {
     }
     // now get to actual tokenizing
     while (index < line.size()) {
-        auto opt_result = lex_token(line, index, tokens);
-        if (opt_result.has_value()) {
-            return {
-                opt_result.value()
-            };
+        auto token_result = lex_token(line, index);
+        if (std::holds_alternative<Token>(token_result)) {
+            tokens.push_back(std::get<Token>(token_result));
+        }
+        else {
+            return {std::get<LexResult::Err>(token_result)};
         }
     } // end while(index < line.size())
     return {
@@ -62,14 +64,6 @@ std::optional<LexResult::Err> lex_line_num(const std::string& line,
     while (index < line.size() && std::isdigit(line[index])) {
         line_num_stream << line[index];
         index++;
-    }
-    // specialised more helpful error message
-    if (line[index] == '.') {
-        return LexResult::Err{k_msg_line_num_non_int};
-    }
-    if (!std::isspace(line[index])) {
-        return LexResult::Err{
-            k_msg_line_num_missing_space};
     }
     std::string line_num_string = line_num_stream.str();
     if (line_num_string.size() != 0) {

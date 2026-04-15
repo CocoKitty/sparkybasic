@@ -7,7 +7,7 @@
 
 #include <sstream>
 
-using namespace basic;
+using namespace basic::lexer;
 
 Token Token::from_literal(double num) {
     return Token(Token::NumLiteral, num);
