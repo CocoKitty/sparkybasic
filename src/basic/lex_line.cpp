@@ -1,10 +1,10 @@
 // By Edith Pugh on 2026-04-10
 
-#include "parse.hpp"
+#include "lex_line.hpp"
 
 #include "token.hpp"
 #include "error_messages.hpp"
-#include "parse_token.hpp"
+#include "lex_token.hpp"
 
 #include <vector>
 #include <cctype>
@@ -15,15 +15,15 @@
 using namespace basic;
 
 // helper function to eat line num
-std::optional<ParseResult::Err> parse_line_num(const std::string& line,
+std::optional<LexResult::Err> lex_line_num(const std::string& line,
     size_t& index,
     std::vector<Token>& tokens);
 
-ParseResult parse_line(const std::string& line) {
+LexResult lex_line(const std::string& line) {
     std::vector<Token> tokens;
     size_t index = 0;
     { // run line num
-        auto opt_result = parse_line_num(line, index, tokens);
+        auto opt_result = lex_line_num(line, index, tokens);
         if (opt_result.has_value()) {
             return {
                 opt_result.value()
@@ -32,7 +32,7 @@ ParseResult parse_line(const std::string& line) {
     }
     // now get to actual tokenizing
     while (index < line.size()) {
-        auto opt_result = parse_token(line, index, tokens);
+        auto opt_result = lex_token(line, index, tokens);
         if (opt_result.has_value()) {
             return {
                 opt_result.value()
@@ -40,13 +40,11 @@ ParseResult parse_line(const std::string& line) {
         }
     } // end while(index < line.size())
     return {
-        ParseResult::Ok{tokens}
+        LexResult::Ok{tokens}
     };
-} // end parse_line
+} // end lex_line
 
-// HELPERS
-
-std::optional<ParseResult::Err> parse_line_num(const std::string& line,
+std::optional<LexResult::Err> lex_line_num(const std::string& line,
     size_t& index,
     std::vector<Token>& tokens) {
     // skip initial whitespace to allow for indentation
@@ -54,10 +52,10 @@ std::optional<ParseResult::Err> parse_line_num(const std::string& line,
         index++;
     }
     if (line[index] == '0') {
-        return ParseResult::Err{k_msg_line_num_leading_zero};
+        return LexResult::Err{k_msg_line_num_leading_zero};
     }
     if (line[index] == '-') {
-        return ParseResult::Err{k_msg_line_num_negative};
+        return LexResult::Err{k_msg_line_num_negative};
     }
     // eat linenum rq
     std::stringstream line_num_stream;
@@ -67,10 +65,10 @@ std::optional<ParseResult::Err> parse_line_num(const std::string& line,
     }
     // specialised more helpful error message
     if (line[index] == '.') {
-        return ParseResult::Err{k_msg_line_num_non_int};
+        return LexResult::Err{k_msg_line_num_non_int};
     }
     if (!std::isspace(line[index])) {
-        return ParseResult::Err{
+        return LexResult::Err{
             k_msg_line_num_missing_space};
     }
     std::string line_num_string = line_num_stream.str();

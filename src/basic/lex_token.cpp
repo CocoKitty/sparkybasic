@@ -1,6 +1,6 @@
 // By Edith Pugh on 2026-04-14
 
-#include "parse_token.hpp"
+#include "lex_token.hpp"
 
 #include "token.hpp"
 #include "error_messages.hpp"
@@ -12,8 +12,8 @@
 
 using namespace basic;
 
-// parses one token from the line
-std::optional<ParseResult::Err> parse_token(const std::string& line,
+// lexes one token from the line
+std::optional<LexResult::Err> lex_token(const std::string& line,
     size_t& index,
     std::vector<Token>& tokens) {
     // match identifiers
@@ -37,7 +37,7 @@ std::optional<ParseResult::Err> parse_token(const std::string& line,
             if (line[index] == '\\') {
                 index++;
                 if (index >= line.size()) {
-                    return ParseResult::Err{
+                    return LexResult::Err{
                         k_msg_unexpected_eol_reading_string
                     };
                 }
@@ -57,7 +57,7 @@ std::optional<ParseResult::Err> parse_token(const std::string& line,
                     std::stringstream err_msg;
                     err_msg << k_msg_unknown_backspace_sequence;
                     err_msg << line[index];
-                    return ParseResult::Err {
+                    return LexResult::Err {
                         err_msg.str()
                     };
                 }
@@ -68,7 +68,7 @@ std::optional<ParseResult::Err> parse_token(const std::string& line,
             index++;
         } // end while (index < line.size() && line[index] != '"')
         if (index < line.size()) {
-            return ParseResult::Err{
+            return LexResult::Err{
                 k_msg_unexpected_eol_reading_string
             };
         }
@@ -77,11 +77,15 @@ std::optional<ParseResult::Err> parse_token(const std::string& line,
         tokens.push_back(Token::from_literal(str_literal.str()));
         return std::nullopt;
     }
-    // match numbers
-    if(std::isdigit(line[index])) {
+    // match numbers, initial + or - is not included as those are handled by
+    // the parser
+    if (std::isdigit(line[index]) || line[index] == '.') {
         std::stringstream num_literal;
-        while (std::isdigit(line[index])) {
-
+        num_literal << line[index];
+        index++;
+        while (std::isdigit(line[index]) || line[index] == '.') {
+            num_literal << line[index];
+            index++;
         }
     }
     // match operator tokens
@@ -120,6 +124,13 @@ std::optional<ParseResult::Err> parse_token(const std::string& line,
         }
         index++;
         break;
+    default:
+        // since literal and keyword functions already return, this means that
+        // there must be an unknown token. Uh oh!
+        std::stringstream err_msg;
+        err_msg << k_msg_unknown_token;
+        err_msg << line[index];
+        return LexResult::Err{err_msg.str()};
     } // end switch(line[index])
     return std::nullopt;
 }

@@ -19,4 +19,14 @@ namespace basic {
         = "PE10: Unexpected end of line while reading string";
     const std::string k_msg_unknown_backspace_sequence
         = "PE11: Unknown backspace sequence: \\";
+
+    // PE2*, num literal errors
+    const std::string k_msg_ending_in_dot
+        = "PE20: Num literal cannot end in a dot. If this is not true in the "
+        "original implementation of Altair Basic, please raise an issue to that"
+        " effect.";
+
+    // PE8*, miscellaneous errors
+    const std::string k_msg_unknown_token
+        = "PE80: Unknown token: ";
 }

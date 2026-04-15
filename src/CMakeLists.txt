@@ -11,9 +11,17 @@ include(${wxWidgets_USE_FILE})
 
 add_executable(${PROJECT_NAME} )
 target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Werror -Wextra -Wpedantic)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${wxWidgets_LIBRARIES})
+target_link_libraries(${PROJECT_NAME}
+    PRIVATE 
+    ${wxWidgets_LIBRARIES}
+    m
+)
 
 set(CMAKE_CXX_STANDARD 17)
 
-target_sources(${PROJECT_NAME} PRIVATE main.cpp)
+target_sources(${PROJECT_NAME}
+    PRIVATE
+    main.cpp
+    myframe.cpp
+)
 add_subdirectory(basic)

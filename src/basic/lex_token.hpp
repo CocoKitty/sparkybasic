@@ -4,10 +4,11 @@
 #include <optional>
 #include <string>
 
-#include "parse.hpp"
+#include "lex_line.hpp"
+#include "lex_line.hpp"
 
 namespace basic {
-    std::optional<ParseResult::Err> parse_token(const std::string& line,
+    std::optional<LexResult::Err> lex_token(const std::string& line,
         size_t& index,
         std::vector<Token>& tokens);
 }

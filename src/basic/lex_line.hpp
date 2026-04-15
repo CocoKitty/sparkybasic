@@ -8,11 +8,11 @@
 #include<string>
 
 namespace basic {
-    struct ParseResult {
+    struct LexResult {
         struct Ok { std::vector<Token> tokens; };
         struct Err { std::string msg; };
         std::variant<Ok, Err> result;
     }; // end struct ParseResult
     
-    ParseResult parse_line(const std::string& line);
+    LexResult parse_line(const std::string& line);
 } // end namespace basic
